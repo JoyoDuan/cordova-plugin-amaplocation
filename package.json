@@ -1,9 +1,9 @@
 {
-  "name": "cordova-plugin-amaplocation-joyo",
-  "version": "0.0.1",
+  "name": "cordova-plugin-amaplocation",
+  "version": "1.0.0",
   "description": "Cordova AMapLocationPlugin Plugin Powerd by JoyoDuan",
   "cordova": {
-    "id": "cordova-plugin-amaplocation-joyo",
+    "id": "cordova-plugin-amaplocation",
     "platforms": [
       "android",
       "ios"
