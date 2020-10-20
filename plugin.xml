@@ -58,7 +58,8 @@
             <service android:name="com.amap.api.location.APSService"/>
         </config-file>
 
-        <source-file src="libs/android/AMap_Location_V4.5.0_20190121.jar" target-dir="libs"/>
+        <!-- <source-file src="libs/android/AMap_Location_V4.5.0_20190121.jar" target-dir="libs"/> -->
+        <source-file src="libs/android/AMap_Location_V5.2.0_20200915.jar" target-dir="libs"/>
 
         <source-file src="src/android/AMapLocationPlugin.java" target-dir="src/com/joyo/cordova/location">
         </source-file>
