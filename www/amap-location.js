@@ -6,7 +6,7 @@ function AMapLocationPlugin() {}
 AMapLocationPlugin.prototype.getLocation = function(successCallback, errorCallback, locationOptions) {
 	exec(successCallback, errorCallback, "AMapLocationPlugin", "getLocation", [
 		locationOptions.isOnceLocation,
-		locationOptions,interval
+		locationOptions,locationInterval
 	]);
 };
 
