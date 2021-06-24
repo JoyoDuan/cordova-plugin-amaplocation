@@ -3,10 +3,10 @@ var exec = require('cordova/exec');
 // 这里的命令AMapLocationPlugin与plugin.xml无关，用abc都可以，module.exports用于require('')
 function AMapLocationPlugin() {}
 
-AMapLocationPlugin.prototype.getLocation = function(successCallback, errorCallback, locationOptions) {
+AMapLocationPlugin.prototype.getLocation = function(successCallback, errorCallback, options) {
 	exec(successCallback, errorCallback, "AMapLocationPlugin", "getLocation", [
-		locationOptions.isOnceLocation,
-		locationOptions,locationInterval
+		options.isOnceLocation,
+		options.locationInterval
 	]);
 };
 
