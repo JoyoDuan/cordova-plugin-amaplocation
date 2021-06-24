@@ -170,11 +170,11 @@ public class AMapLocationPlugin extends CordovaPlugin {
             jo = null;
             e.printStackTrace();
           }
-          // callbackContext.success(jo);
+          callbackContext.success(jo);
 
-          PluginResult r = new PluginResult(PluginResult.Status.OK);
-          r.setKeepCallback(true);
-          callbackContext.sendPluginResult(r);
+          // PluginResult r = new PluginResult(PluginResult.Status.OK, jo);
+          // r.setKeepCallback(true);
+          // callbackContext.sendPluginResult(r);
         } else {
           //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
           Log.e("AmapError", "location Error, ErrCode:"
@@ -212,9 +212,9 @@ public class AMapLocationPlugin extends CordovaPlugin {
     // 启动定位
     locationClient.startLocation();
 
-    // PluginResult r = new PluginResult(PluginResult.Status.OK);
-    // r.setKeepCallback(true);
-    // callbackContext.sendPluginResult(r);
+    PluginResult r = new PluginResult(PluginResult.Status.OK);
+    r.setKeepCallback(true);
+    callbackContext.sendPluginResult(r);
   }
 
   // private void coolMethod(String message, CallbackContext callbackContext) {
