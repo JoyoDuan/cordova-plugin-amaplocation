@@ -30,6 +30,8 @@ import com.amap.api.location.AMapLocationListener;
 public class AMapLocationPlugin extends CordovaPlugin {
   // 定位方法名
   private static final String ACTION_GET_LOCATION = "getlocation";
+  // 停止定位方法名
+  private static final String ACTION_STOP_LOCATION = "stoplocation";
 
   // 是否只执行一次定位
   private boolean isOnceLocation;
@@ -43,7 +45,7 @@ public class AMapLocationPlugin extends CordovaPlugin {
   public static final int ACCESS_LOCATION = 1;
 
   private AMapLocationClient locationClient = null;
-  private AMapLocationClientOption locationOption = null;
+  private AMapLocationClientOption locationClientOption = null;
   private Context context;
   private CallbackContext callbackContext = null;
 
@@ -65,6 +67,7 @@ public class AMapLocationPlugin extends CordovaPlugin {
     isOnceLocation = args.getBoolean(0);
     locationInterval = args.getLong(1);
 
+    // 获取定位
     if (ACTION_GET_LOCATION.equals(action.toLowerCase(Locale.CHINA))) {
       if (context.getApplicationInfo().targetSdkVersion < 23) {
         this.getLocation();
@@ -77,6 +80,12 @@ public class AMapLocationPlugin extends CordovaPlugin {
           PermissionHelper.requestPermissions(this, ACCESS_LOCATION, permissions);
         }
       }
+      return true;
+    }
+
+    // 停止定位
+    if (ACTION_STOP_LOCATION.equals(action.toLowerCase(Locale.CHINA))) {
+      this.stopLocation();
       return true;
     }
     return false;
@@ -189,21 +198,21 @@ public class AMapLocationPlugin extends CordovaPlugin {
   // 定位
   private void getLocation() {
     locationClient = new AMapLocationClient(context);
-    locationOption = new AMapLocationClientOption();
+    locationClientOption = new AMapLocationClientOption();
 
     // 设置定位模式 Battery_Saving: 低功耗  Hight_Accuracy: 高精度  Device_Sensors: GPS
-    locationOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
+    locationClientOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
     // 设置是否使用手机传感器
-    locationOption.setSensorEnable(true);
+    locationClientOption.setSensorEnable(true);
     // 设置为单次定位
-    locationOption.setOnceLocation(isOnceLocation);
+    locationClientOption.setOnceLocation(isOnceLocation);
     // 设置定位间隔,单位毫秒,默认为2000ms，最低1000ms。
-    locationOption.setInterval(locationInterval);
+    locationClientOption.setInterval(locationInterval);
     // 使用签到定位场景
     // locationOption.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.SignIn);
 
     // 设置定位参数
-    locationClient.setLocationOption(locationOption);
+    locationClient.setLocationOption(locationClientOption);
     // 设置定位监听
     locationClient.setLocationListener(amapLocationListener);
 
@@ -215,6 +224,33 @@ public class AMapLocationPlugin extends CordovaPlugin {
     PluginResult r = new PluginResult(PluginResult.Status.OK);
     r.setKeepCallback(true);
     callbackContext.sendPluginResult(r);
+  }
+
+  /**
+   * 停止定位
+   *
+   * @Author JoyoDuan
+   * @Date 2021/6/28
+   * @Description:
+   */
+  private void stopLocation() {
+    if (locationClient == null) {
+      return;
+    }
+
+    try {
+      locationClient.stopLocation();
+      locationClient.onDestroy();
+      locationClient = null;
+
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("code", 2000);
+      jsonObject.put("message", "Location is stopped");
+
+      callbackContext.success(jsonObject);
+    } catch (Exception e) {
+      callbackContext.error(e.getMessage());
+    }
   }
 
   // private void coolMethod(String message, CallbackContext callbackContext) {

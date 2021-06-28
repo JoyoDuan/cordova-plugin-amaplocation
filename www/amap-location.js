@@ -9,5 +9,8 @@ AMapLocationPlugin.prototype.getLocation = function(successCallback, errorCallba
 		options.locationInterval
 	]);
 };
+AMapLocationPlugin.prototype.stopLocation = function(successCallback, errorCallback) {
+	exec(successCallback, errorCallback, "AMapLocationPlugin", "stopLocation", []);
+};
 
 module.exports = new AMapLocationPlugin();
