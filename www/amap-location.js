@@ -9,8 +9,17 @@ AMapLocationPlugin.prototype.getLocation = function(successCallback, errorCallba
 		options.locationInterval
 	]);
 };
+
 AMapLocationPlugin.prototype.stopLocation = function(successCallback, errorCallback) {
 	exec(successCallback, errorCallback, "AMapLocationPlugin", "stopLocation", []);
+};
+
+AMapLocationPlugin.prototype.enableBackgroundLocation = function(successCallback, errorCallback) {
+	exec(successCallback, errorCallback, "AMapLocationPlugin", "enableBackgroundLocation", []);
+};
+
+AMapLocationPlugin.prototype.disableBackgroundLocation = function(successCallback, errorCallback) {
+	exec(successCallback, errorCallback, "AMapLocationPlugin", "disableBackgroundLocation", []);
 };
 
 module.exports = new AMapLocationPlugin();

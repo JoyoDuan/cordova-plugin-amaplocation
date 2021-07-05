@@ -71,18 +71,18 @@ public class AMapLocationPlugin extends CordovaPlugin {
     super.onResume(multitasking);
 
     // 切入前台后关闭后台定位功能
-    if (null != locationClient) {
-      locationClient.disableBackgroundLocation(true);
-    }
+    // if (null != locationClient) {
+    //   locationClient.disableBackgroundLocation(true);
+    // }
   }
 
   @Override
   public void onStop() {
     super.onStop();
 
-    if (null != locationClient) {
-      locationClient.enableBackgroundLocation(10010, buildNotification());
-    }
+    // if (null != locationClient) {
+    //   locationClient.enableBackgroundLocation(10010, buildNotification());
+    // }
   }
 
   @Override
@@ -95,12 +95,12 @@ public class AMapLocationPlugin extends CordovaPlugin {
     // 获取定位
     if (ACTION_GET_LOCATION.equals(action.toLowerCase(Locale.CHINA))) {
       if (context.getApplicationInfo().targetSdkVersion < 23) {
-        this.getLocation();
+        getLocation();
       } else {
         boolean access_fine_location = PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         boolean access_coarse_location = PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
         if (access_fine_location && access_coarse_location) {
-          this.getLocation();
+          getLocation();
         } else {
           PermissionHelper.requestPermissions(this, ACCESS_LOCATION, permissions);
         }
@@ -110,7 +110,19 @@ public class AMapLocationPlugin extends CordovaPlugin {
 
     // 停止定位
     if (ACTION_STOP_LOCATION.equals(action.toLowerCase(Locale.CHINA))) {
-      this.stopLocation();
+      stopLocation();
+      return true;
+    }
+
+    // 启用后台定位功能
+    if ("enableBackgroundLocation".equals(action)) {
+      enableBackgroundLocation();
+      return true;
+    }
+
+    // 关闭后台定位功能
+    if ("disableBackgroundLocation".equals(action)) {
+      disableBackgroundLocation();
       return true;
     }
     return false;
@@ -121,7 +133,7 @@ public class AMapLocationPlugin extends CordovaPlugin {
     switch (requestCode) {
       case ACCESS_LOCATION:
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          this.getLocation();
+          getLocation();
         } else {
           Toast.makeText(this.cordova.getActivity(), "请开启应用定位权限", Toast.LENGTH_SHORT).show();
         }
@@ -275,6 +287,34 @@ public class AMapLocationPlugin extends CordovaPlugin {
       callbackContext.success(jsonObject);
     } catch (Exception e) {
       callbackContext.error(e.getMessage());
+    }
+  }
+
+  /**
+   * 启用后台定位
+   *
+   * @Author JoyoDuan
+   * @Date 2021/7/5
+   * @Description:
+   */
+  private void enableBackgroundLocation() {
+    // 启用后台定位功能
+    if (null != locationClient) {
+      locationClient.enableBackgroundLocation(10010, buildNotification());
+    }
+  }
+
+  /**
+   * 关闭后台定位
+   *
+   * @Author JoyoDuan
+   * @Date 2021/7/5
+   * @Description:
+   */
+  private void disableBackgroundLocation() {
+    // 关闭后台定位功能
+    if (null != locationClient) {
+      locationClient.disableBackgroundLocation(true);
     }
   }
 
