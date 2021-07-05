@@ -1,8 +1,14 @@
 package com.joyo.cordova.location;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 import org.apache.cordova.CordovaPlugin;
@@ -58,6 +64,25 @@ public class AMapLocationPlugin extends CordovaPlugin {
   @Override
   public void onDestroy() {
     super.onDestroy();
+  }
+
+  @Override
+  public void onResume(boolean multitasking) {
+    super.onResume(multitasking);
+
+    // 切入前台后关闭后台定位功能
+    if (null != locationClient) {
+      locationClient.disableBackgroundLocation(true);
+    }
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+
+    if (null != locationClient) {
+      locationClient.enableBackgroundLocation(10010, buildNotification());
+    }
   }
 
   @Override
@@ -260,4 +285,60 @@ public class AMapLocationPlugin extends CordovaPlugin {
   //         callbackContext.error("Expected one non-empty string argument.");
   //     }
   // }
+
+
+  private static final String NOTIFICATION_CHANNEL_NAME = "BackgroundLocation";
+  private NotificationManager notificationManager = null;
+  boolean isCreateChannel = false;
+  @SuppressLint("NewApi")
+  private Notification buildNotification() {
+
+    Notification.Builder builder = null;
+    Notification notification = null;
+    if(android.os.Build.VERSION.SDK_INT >= 26) {
+      //Android O上对Notification进行了修改，如果设置的targetSDKVersion>=26建议使用此种方式创建通知栏
+      if (null == notificationManager) {
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+      }
+      String channelId = context.getPackageName();
+      if(!isCreateChannel) {
+        NotificationChannel notificationChannel = new NotificationChannel(channelId,
+                NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        notificationChannel.enableLights(true);//是否在桌面icon右上角展示小圆点
+        notificationChannel.setLightColor(Color.BLUE); //小圆点颜色
+        notificationChannel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+        notificationManager.createNotificationChannel(notificationChannel);
+        isCreateChannel = true;
+      }
+      builder = new Notification.Builder(context, channelId);
+    } else {
+      builder = new Notification.Builder(context);
+    }
+    builder.setContentTitle(getAppName(context))
+            // .setSmallIcon(R.drawable.ic_launcher)
+            .setContentText("正在后台运行")
+            .setWhen(System.currentTimeMillis());
+
+    return builder.build();
+  }
+
+
+  /**
+   * 获取app的名称
+   * @param context
+   * @return
+   */
+  public static String getAppName(Context context) {
+    String appName = "";
+    try {
+      PackageManager packageManager = context.getPackageManager();
+      PackageInfo packageInfo = packageManager.getPackageInfo(
+              context.getPackageName(), 0);
+      int labelRes = packageInfo.applicationInfo.labelRes;
+      appName =  context.getResources().getString(labelRes);
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+    return appName;
+  }
 }
