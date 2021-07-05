@@ -45,8 +45,8 @@ public class AMapLocationPlugin extends CordovaPlugin {
   private long locationInterval;
 
   protected static final String[] permissions = {
-    Manifest.permission.ACCESS_FINE_LOCATION,
-    Manifest.permission.ACCESS_COARSE_LOCATION
+          Manifest.permission.ACCESS_FINE_LOCATION,
+          Manifest.permission.ACCESS_COARSE_LOCATION
   };
   public static final int ACCESS_LOCATION = 1;
 
@@ -224,8 +224,8 @@ public class AMapLocationPlugin extends CordovaPlugin {
         } else {
           //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
           Log.e("AmapError", "location Error, ErrCode:"
-            + amapLocation.getErrorCode() + ", errInfo:"
-            + amapLocation.getErrorInfo());
+                  + amapLocation.getErrorCode() + ", errInfo:"
+                  + amapLocation.getErrorInfo());
           callbackContext.error(amapLocation.getErrorInfo());
         }
       }
@@ -300,7 +300,19 @@ public class AMapLocationPlugin extends CordovaPlugin {
   private void enableBackgroundLocation() {
     // 启用后台定位功能
     if (null != locationClient) {
-      locationClient.enableBackgroundLocation(10010, buildNotification());
+      JSONObject jsonObject = new JSONObject();
+      try {
+        locationClient.enableBackgroundLocation(10010, buildNotification());
+
+        jsonObject.put("code", 2000);
+        jsonObject.put("message", "EnableBackgroundLocation is success");
+
+        callbackContext.success(jsonObject);
+      } catch (Exception e) {
+        callbackContext.error(e.getMessage());
+      }
+    } else {
+      callbackContext.error("LocationClient is null");
     }
   }
 
@@ -314,7 +326,19 @@ public class AMapLocationPlugin extends CordovaPlugin {
   private void disableBackgroundLocation() {
     // 关闭后台定位功能
     if (null != locationClient) {
-      locationClient.disableBackgroundLocation(true);
+      JSONObject jsonObject = new JSONObject();
+      try {
+        locationClient.disableBackgroundLocation(true);
+
+        jsonObject.put("code", 2000);
+        jsonObject.put("message", "DisableBackgroundLocation is success");
+
+        callbackContext.success(jsonObject);
+      } catch (Exception e) {
+        callbackContext.error(e.getMessage());
+      }
+    } else {
+      callbackContext.error("LocationClient is null");
     }
   }
 
