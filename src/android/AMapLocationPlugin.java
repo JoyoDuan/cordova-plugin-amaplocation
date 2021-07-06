@@ -359,13 +359,13 @@ public class AMapLocationPlugin extends CordovaPlugin {
 
     Notification.Builder builder = null;
     Notification notification = null;
-    if(android.os.Build.VERSION.SDK_INT >= 26) {
-      //Android O上对Notification进行了修改，如果设置的targetSDKVersion>=26建议使用此种方式创建通知栏
+    if (android.os.Build.VERSION.SDK_INT >= 26) {
+      // Android O上对Notification进行了修改，如果设置的targetSDKVersion>=26建议使用此种方式创建通知栏
       if (null == notificationManager) {
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
       }
       String channelId = context.getPackageName();
-      if(!isCreateChannel) {
+      if (!isCreateChannel) {
         NotificationChannel notificationChannel = new NotificationChannel(channelId,
                 NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
         notificationChannel.enableLights(true);//是否在桌面icon右上角展示小圆点
@@ -379,7 +379,8 @@ public class AMapLocationPlugin extends CordovaPlugin {
       builder = new Notification.Builder(context);
     }
     builder.setContentTitle(getAppName(context))
-            // .setSmallIcon(R.drawable.ic_launcher)
+            // .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(context.getApplicationInfo().icon)
             .setContentText("正在后台运行")
             .setWhen(System.currentTimeMillis());
 
