@@ -299,20 +299,21 @@ public class AMapLocationPlugin extends CordovaPlugin {
    */
   private void enableBackgroundLocation() {
     // 启用后台定位功能
-    if (null != locationClient) {
-      JSONObject jsonObject = new JSONObject();
-      try {
-        locationClient.enableBackgroundLocation(10010, buildNotification());
+    if (null == locationClient) {
+      locationClient = new AMapLocationClient(context);
+    }
 
-        jsonObject.put("code", 2000);
-        jsonObject.put("message", "EnableBackgroundLocation is success");
+    JSONObject jsonObject = new JSONObject();
 
-        callbackContext.success(jsonObject);
-      } catch (Exception e) {
-        callbackContext.error(e.getMessage());
-      }
-    } else {
-      callbackContext.error("LocationClient is null");
+    try {
+      locationClient.enableBackgroundLocation(2001, buildNotification());
+
+      jsonObject.put("code", 2000);
+      jsonObject.put("message", "EnableBackgroundLocation is success");
+
+      callbackContext.success(jsonObject);
+    } catch (Exception e) {
+      callbackContext.error(e.getMessage());
     }
   }
 
@@ -324,21 +325,22 @@ public class AMapLocationPlugin extends CordovaPlugin {
    * @Description:
    */
   private void disableBackgroundLocation() {
-    // 关闭后台定位功能
-    if (null != locationClient) {
-      JSONObject jsonObject = new JSONObject();
-      try {
-        locationClient.disableBackgroundLocation(true);
+    if (null == locationClient) {
+      locationClient = new AMapLocationClient(context);
+    }
 
-        jsonObject.put("code", 2000);
-        jsonObject.put("message", "DisableBackgroundLocation is success");
+    JSONObject jsonObject = new JSONObject();
 
-        callbackContext.success(jsonObject);
-      } catch (Exception e) {
-        callbackContext.error(e.getMessage());
-      }
-    } else {
-      callbackContext.error("LocationClient is null");
+    try {
+      // 关闭后台定位功能
+      locationClient.disableBackgroundLocation(true);
+
+      jsonObject.put("code", 2000);
+      jsonObject.put("message", "DisableBackgroundLocation is success");
+
+      callbackContext.success(jsonObject);
+    } catch (Exception e) {
+      callbackContext.error(e.getMessage());
     }
   }
 
@@ -356,7 +358,6 @@ public class AMapLocationPlugin extends CordovaPlugin {
   boolean isCreateChannel = false;
   @SuppressLint("NewApi")
   private Notification buildNotification() {
-
     Notification.Builder builder = null;
     Notification notification = null;
     if (android.os.Build.VERSION.SDK_INT >= 26) {
@@ -368,15 +369,15 @@ public class AMapLocationPlugin extends CordovaPlugin {
       if (!isCreateChannel) {
         NotificationChannel notificationChannel = new NotificationChannel(channelId,
                 NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-        notificationChannel.enableLights(true);//是否在桌面icon右上角展示小圆点
-        notificationChannel.setLightColor(Color.BLUE); //小圆点颜色
-        notificationChannel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+        notificationChannel.enableLights(true); // 是否在桌面icon右上角展示小圆点
+        notificationChannel.setLightColor(Color.BLUE); // 小圆点颜色
+        notificationChannel.setShowBadge(true); // 是否在久按桌面图标时显示此渠道的通知
         notificationManager.createNotificationChannel(notificationChannel);
         isCreateChannel = true;
       }
-      builder = new Notification.Builder(context, channelId);
+      builder = new Notification.Builder(context.getApplicationContext(), channelId);
     } else {
-      builder = new Notification.Builder(context);
+      builder = new Notification.Builder(context.getApplicationContext());
     }
     builder.setContentTitle(getAppName(context))
             // .setSmallIcon(R.mipmap.ic_launcher)
