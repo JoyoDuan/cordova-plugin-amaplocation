@@ -222,11 +222,15 @@ public class AMapLocationPlugin extends CordovaPlugin {
           r.setKeepCallback(true);
           callbackContext.sendPluginResult(r);
         } else {
-          //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+          // 定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
           Log.e("AmapError", "location Error, ErrCode:"
                   + amapLocation.getErrorCode() + ", errInfo:"
                   + amapLocation.getErrorInfo());
-          callbackContext.error(amapLocation.getErrorInfo());
+          // callbackContext.error(amapLocation.getErrorInfo());
+
+          PluginResult r = new PluginResult(PluginResult.Status.ERROR, amapLocation.getErrorInfo());
+          r.setKeepCallback(true);
+          callbackContext.sendPluginResult(r);
         }
       }
     }
@@ -284,9 +288,17 @@ public class AMapLocationPlugin extends CordovaPlugin {
       jsonObject.put("code", 2000);
       jsonObject.put("message", "Location is stopped");
 
-      callbackContext.success(jsonObject);
+      // callbackContext.success(jsonObject);
+
+      PluginResult r = new PluginResult(PluginResult.Status.OK, jsonObject);
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
     } catch (Exception e) {
-      callbackContext.error(e.getMessage());
+      // callbackContext.error(e.getMessage());
+
+      PluginResult r = new PluginResult(PluginResult.Status.ERROR, e.getMessage());
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
     }
   }
 
@@ -311,9 +323,17 @@ public class AMapLocationPlugin extends CordovaPlugin {
       jsonObject.put("code", 2000);
       jsonObject.put("message", "EnableBackgroundLocation is success");
 
-      callbackContext.success(jsonObject);
+      // callbackContext.success(jsonObject);
+
+      PluginResult r = new PluginResult(PluginResult.Status.OK, jsonObject);
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
     } catch (Exception e) {
-      callbackContext.error(e.getMessage());
+      // callbackContext.error(e.getMessage());
+
+      PluginResult r = new PluginResult(PluginResult.Status.ERROR, e.getMessage());
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
     }
   }
 
@@ -338,9 +358,17 @@ public class AMapLocationPlugin extends CordovaPlugin {
       jsonObject.put("code", 2000);
       jsonObject.put("message", "DisableBackgroundLocation is success");
 
-      callbackContext.success(jsonObject);
+      // callbackContext.success(jsonObject);
+
+      PluginResult r = new PluginResult(PluginResult.Status.OK, jsonObject);
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
     } catch (Exception e) {
-      callbackContext.error(e.getMessage());
+      // callbackContext.error(e.getMessage());
+
+      PluginResult r = new PluginResult(PluginResult.Status.ERROR, e.getMessage());
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
     }
   }
 
