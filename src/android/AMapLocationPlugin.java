@@ -57,7 +57,7 @@ public class AMapLocationPlugin extends CordovaPlugin {
 
   @Override
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-    context = this.cordova.getActivity().getApplicationContext();
+    context = cordova.getActivity().getApplicationContext();
     super.initialize(cordova, webView);
   }
 
@@ -89,11 +89,11 @@ public class AMapLocationPlugin extends CordovaPlugin {
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     this.callbackContext = callbackContext;
 
-    isOnceLocation = args.getBoolean(0);
-    locationInterval = args.getLong(1);
-
     // 获取定位
     if (ACTION_GET_LOCATION.equals(action.toLowerCase(Locale.CHINA))) {
+      isOnceLocation = args.getBoolean(0);
+      locationInterval = args.getLong(1);
+
       if (context.getApplicationInfo().targetSdkVersion < 23) {
         getLocation();
       } else {
@@ -403,9 +403,9 @@ public class AMapLocationPlugin extends CordovaPlugin {
         notificationManager.createNotificationChannel(notificationChannel);
         isCreateChannel = true;
       }
-      builder = new Notification.Builder(context.getApplicationContext(), channelId);
+      builder = new Notification.Builder(context, channelId);
     } else {
-      builder = new Notification.Builder(context.getApplicationContext());
+      builder = new Notification.Builder(context);
     }
     builder.setContentTitle(getAppName(context))
             // .setSmallIcon(R.mipmap.ic_launcher)
