@@ -410,7 +410,7 @@ public class AMapLocationPlugin extends CordovaPlugin {
     builder.setContentTitle(getAppName(context))
             // .setSmallIcon(R.mipmap.ic_launcher)
             .setSmallIcon(context.getApplicationInfo().icon)
-            .setContentText("正在后台运行")
+            .setContentText("正在运行")
             .setWhen(System.currentTimeMillis());
 
     return builder.build();
