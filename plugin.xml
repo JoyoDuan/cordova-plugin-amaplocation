@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="cordova-plugin-amaplocation" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="cordova-plugin-amaplocation" version="2.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>AMapLocationPlugin</name>
     <description>Cordova AMapLocationPlugin Plugin Powerd by JoyoDuan</description>
     <author email="JoyoDuan@163.com" href="">
@@ -75,7 +75,7 @@
         </config-file>
 
         <!-- <source-file src="libs/android/AMap_Location_V4.5.0_20190121.jar" target-dir="libs"/> -->
-        <source-file src="libs/android/AMap_Location_V5.3.1_20210331.jar" target-dir="libs"/>
+        <source-file src="libs/android/AMap_Location_V5.6.0_20211029.jar" target-dir="libs"/>
 
         <source-file src="src/android/AMapLocationPlugin.java" target-dir="src/com/joyo/cordova/location">
         </source-file>

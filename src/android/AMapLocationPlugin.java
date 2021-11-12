@@ -238,33 +238,46 @@ public class AMapLocationPlugin extends CordovaPlugin {
 
   // 定位
   private void getLocation() {
-    locationClient = new AMapLocationClient(context);
-    locationClientOption = new AMapLocationClientOption();
+    // 设置包含隐私政策，并展示用户授权弹窗 <b>必须在AmapLocationClient实例化之前调用</b>
+    AMapLocationClient.updatePrivacyShow(context, true, true);
+    // 设置是否同意用户授权政策 <b>必须在AmapLocationClient实例化之前调用</b>
+    AMapLocationClient.updatePrivacyAgree(context, true);
 
-    // 设置定位模式 Battery_Saving: 低功耗  Hight_Accuracy: 高精度  Device_Sensors: GPS
-    locationClientOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
-    // 设置是否使用手机传感器
-    locationClientOption.setSensorEnable(true);
-    // 设置为单次定位
-    locationClientOption.setOnceLocation(isOnceLocation);
-    // 设置定位间隔,单位毫秒,默认为2000ms，最低1000ms。
-    locationClientOption.setInterval(locationInterval);
-    // 使用签到定位场景
-    // locationOption.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.SignIn);
+    try {
+      locationClient = new AMapLocationClient(context);
+      locationClientOption = new AMapLocationClientOption();
 
-    // 设置定位参数
-    locationClient.setLocationOption(locationClientOption);
-    // 设置定位监听
-    locationClient.setLocationListener(amapLocationListener);
+      // 设置定位模式 Battery_Saving: 低功耗  Hight_Accuracy: 高精度  Device_Sensors: GPS
+      locationClientOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
+      // 设置是否使用手机传感器
+      locationClientOption.setSensorEnable(true);
+      // 设置为单次定位
+      locationClientOption.setOnceLocation(isOnceLocation);
+      // 设置定位间隔,单位毫秒,默认为2000ms，最低1000ms。
+      locationClientOption.setInterval(locationInterval);
+      // 使用签到定位场景
+      // locationOption.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.SignIn);
 
-    // 设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
-    // locationClient.stopLocation();
-    // 启动定位
-    locationClient.startLocation();
+      // 设置定位参数
+      locationClient.setLocationOption(locationClientOption);
+      // 设置定位监听
+      locationClient.setLocationListener(amapLocationListener);
 
-    PluginResult r = new PluginResult(PluginResult.Status.OK);
-    r.setKeepCallback(true);
-    callbackContext.sendPluginResult(r);
+      // 设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
+      // locationClient.stopLocation();
+      // 启动定位
+      locationClient.startLocation();
+
+      PluginResult r = new PluginResult(PluginResult.Status.OK);
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
+    } catch (Exception e) {
+      e.printStackTrace();
+
+      PluginResult r = new PluginResult(PluginResult.Status.ERROR, e.getMessage());
+      r.setKeepCallback(true);
+      callbackContext.sendPluginResult(r);
+    }
   }
 
   /**
@@ -310,14 +323,14 @@ public class AMapLocationPlugin extends CordovaPlugin {
    * @Description:
    */
   private void enableBackgroundLocation() {
-    // 启用后台定位功能
-    if (null == locationClient) {
-      locationClient = new AMapLocationClient(context);
-    }
-
     JSONObject jsonObject = new JSONObject();
 
     try {
+      // 启用后台定位功能
+      if (null == locationClient) {
+        locationClient = new AMapLocationClient(context);
+      }
+
       locationClient.enableBackgroundLocation(2001, buildNotification());
 
       jsonObject.put("code", 2000);
@@ -345,13 +358,13 @@ public class AMapLocationPlugin extends CordovaPlugin {
    * @Description:
    */
   private void disableBackgroundLocation() {
-    if (null == locationClient) {
-      locationClient = new AMapLocationClient(context);
-    }
-
     JSONObject jsonObject = new JSONObject();
 
     try {
+      if (null == locationClient) {
+        locationClient = new AMapLocationClient(context);
+      }
+
       // 关闭后台定位功能
       locationClient.disableBackgroundLocation(true);
 
@@ -410,7 +423,7 @@ public class AMapLocationPlugin extends CordovaPlugin {
     builder.setContentTitle(getAppName(context))
             // .setSmallIcon(R.mipmap.ic_launcher)
             .setSmallIcon(context.getApplicationInfo().icon)
-            .setContentText("正在运行")
+            .setContentText("正在后台运行")
             .setWhen(System.currentTimeMillis());
 
     return builder.build();
